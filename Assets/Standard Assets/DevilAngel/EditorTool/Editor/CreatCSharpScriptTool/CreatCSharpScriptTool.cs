@@ -24,8 +24,13 @@ namespace DevileAngel.EditorTool
         private static void OpenCreatCSharpScript()
         {
             string pathName = Utilits.GetSelectionPath()[0] + "/" + DEFINE_CLASS_NAME;
+
             Texture2D icon = EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D;
-            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, ScriptableObject.CreateInstance<CreatCSarpScriptAction>(), pathName, icon, string.Empty);
+
+            var scriptAction = Utilits.GetUnityObjectIndexOf<CreatCSarpScriptAction>();
+            if (scriptAction == null) scriptAction = ScriptableObject.CreateInstance<CreatCSarpScriptAction>();
+           
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, scriptAction, pathName, icon, string.Empty);
         }
 
 
@@ -67,7 +72,7 @@ namespace DevileAngel.EditorTool
                     if (scriptName.Length > 2)
                     {
                         var name = scriptName[1];
-                        if (name >'A' && name < 'Z')
+                        if (name > 'A' && name < 'Z')
                         {
                             script = script.Replace("class", "interface");
                         }

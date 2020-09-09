@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using UnityEditor;
+using UnityEngine;
 
 namespace DevileAngel.EditorTool
 {
@@ -25,6 +26,16 @@ namespace DevileAngel.EditorTool
                 guids[i] = path;
             }
             return guids;
+        }
+
+        public static T GetUnityObjectIndexOf<T>() where T : UnityEngine.Object
+        {
+            var objs = Resources.FindObjectsOfTypeAll<T>();
+            if (objs != null && objs.Length != 0)
+            {
+                return objs[0];
+            }
+            return null;
         }
     }
 }

@@ -32,8 +32,7 @@ namespace DevilAngel.EditorTool
 
         private Editor defaultEditor;
 
-
-        private void Awake()
+        public void OnEnable()
         {
             var objs = Resources.FindObjectsOfTypeAll<TransformExpand>();
             if (objs.Length != 0)
@@ -44,12 +43,8 @@ namespace DevilAngel.EditorTool
             {
                 tranExpand = ScriptableObject.CreateInstance<TransformExpand>();
             }
-
             m_serializedObject = new SerializedObject(tranExpand);
-        }
 
-        public void OnEnable()
-        {
             defaultEditor = Editor.CreateEditor(targets, Type.GetType("UnityEditor.TransformInspector, UnityEditor"));
 
             serializedPropertyPosition = m_serializedObject.FindProperty("addPosition");
@@ -72,7 +67,6 @@ namespace DevilAngel.EditorTool
             defaultEditor.OnInspectorGUI();
 
             DrawOnInspectorGUI();
-
         }
 
         private void DrawOnInspectorGUI()
