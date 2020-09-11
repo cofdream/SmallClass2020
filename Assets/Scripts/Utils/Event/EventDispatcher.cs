@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
-namespace Event
+namespace Cofdream.Event
 {
     public delegate void EventHandler(short type);
     public delegate void EventHandler<T>(short type, T msg);
@@ -115,6 +114,5 @@ namespace Event
                 }
             }
         }
-
     }
 }
