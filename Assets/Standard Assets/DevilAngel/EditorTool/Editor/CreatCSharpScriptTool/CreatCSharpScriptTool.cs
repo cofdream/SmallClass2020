@@ -5,7 +5,7 @@ using UnityEditor.ProjectWindowCallback;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace DevileAngel.EditorTool
+namespace DevilAngel.EditorTool
 {
     internal class CreatCSharpScript
     {
@@ -23,14 +23,9 @@ namespace DevileAngel.EditorTool
         [MenuItem("Assets/Create/C# Script Self", false, 80)]
         private static void OpenCreatCSharpScript()
         {
-            string pathName = Utilits.GetSelectionPath()[0] + "/" + DEFINE_CLASS_NAME;
-
+            string pathName = Utils.GetSelectionPath()[0] + "/" + DEFINE_CLASS_NAME;
             Texture2D icon = EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D;
-
-            var scriptAction = Utilits.GetUnityObjectIndexOf<CreatCSarpScriptAction>();
-            if (scriptAction == null) scriptAction = ScriptableObject.CreateInstance<CreatCSarpScriptAction>();
-           
-            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, scriptAction, pathName, icon, string.Empty);
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0, ScriptableObject.CreateInstance<CreatCSarpScriptAction>(), pathName, icon, string.Empty);
         }
 
 
@@ -72,7 +67,7 @@ namespace DevileAngel.EditorTool
                     if (scriptName.Length > 2)
                     {
                         var name = scriptName[1];
-                        if (name > 'A' && name < 'Z')
+                        if (name >'A' && name < 'Z')
                         {
                             script = script.Replace("class", "interface");
                         }

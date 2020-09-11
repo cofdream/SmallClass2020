@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace DevileAngel.EditorTool
+namespace DevilAngel.EditorTool
 {
     /// <summary>
     /// 工具：为游戏对象的Selcetion Icon 动态设置Icon

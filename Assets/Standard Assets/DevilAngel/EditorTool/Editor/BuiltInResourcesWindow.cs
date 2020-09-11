@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace DevileAngel.EditorTool
+namespace DevilAngel.EditorTool
 {
     public sealed class BuiltInResourcesWindow : EditorWindow
     {
