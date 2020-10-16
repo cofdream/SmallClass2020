@@ -1,11 +1,11 @@
-﻿Shader "Master/Sprite/Gray"
+﻿Shader "Master/Sprite/OldPhoto"
 {
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Tint", Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 0
-		_GrayFactor("GrayFactor", Range(0,1)) = 1 // 设置灰度程度
+		_OldFactor("OldFactor", Range(0,1)) = 1
 	}
 
 		SubShader
@@ -65,17 +65,17 @@
 				sampler2D _AlphaTex;
 				float _AlphaSplitEnabled;
 				
-				float _GrayFactor;
+				float _OldFactor;
 
 				fixed4 SampleSpriteTexture(float2 uv)
 				{
 					fixed4 color = tex2D(_MainTex, uv);
 
-					float gray = color.r * 0.299 + color.g * 0.587 + color.b * 0.114;
+					float r = color.r * 0.393 + color.g * 0.769 + color.b * 0.189;
+					float g = color.r * 0.349 + color.g * 0.686 + color.b * 0.168;
+					float b = color.r * 0.272 + color.g * 0.535 + color.b * 0.131;
 
-					float4 graycolor = float4(gray, gray, gray, color.a);
-
-					color = lerp(color, graycolor, _GrayFactor);
+					color = lerp(color, float4(r, g, b, color.a), _OldFactor);
 
 	#if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
 					if (_AlphaSplitEnabled)

@@ -1,11 +1,13 @@
-﻿Shader "Master/Sprite/Gray"
+﻿Shader "Master/Sprite/Outline"
 {
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Tint", Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 0
-		_GrayFactor("GrayFactor", Range(0,1)) = 1 // 设置灰度程度
+
+		_EdgeColor("EdgeColor", Color) = (0,0,0,1)
+		_EdgeFactor("EdgeFactor", Range(0,1)) = 0.003
 	}
 
 		SubShader
@@ -64,18 +66,49 @@
 				sampler2D _MainTex;
 				sampler2D _AlphaTex;
 				float _AlphaSplitEnabled;
-				
-				float _GrayFactor;
+
+				fixed4	_EdgeColor;
+				float _EdgeFactor;
 
 				fixed4 SampleSpriteTexture(float2 uv)
 				{
 					fixed4 color = tex2D(_MainTex, uv);
 
-					float gray = color.r * 0.299 + color.g * 0.587 + color.b * 0.114;
+					float xAdd = uv.x + _EdgeFactor;
+					float xDec = uv.x - _EdgeFactor;
+					float yAdd = uv.y + _EdgeFactor;
+					float yDec = uv.y - _EdgeFactor;
 
-					float4 graycolor = float4(gray, gray, gray, color.a);
+					half edgeX = tex2D(_MainTex, float2(xDec, yAdd)).a * -1;
+					//edgeX += tex2D(_MainTex, float2(uv.x, yAdd)).a * 0;
+					edgeX +=tex2D(_MainTex, float2(xAdd, yAdd)).a * 1;
 
-					color = lerp(color, graycolor, _GrayFactor);
+					edgeX += tex2D(_MainTex, float2(xDec, uv.y)).a * -2;
+					//edgeX += tex2D(_MainTex, float2(uv.x, uv.y)).a * 0;
+					edgeX += tex2D(_MainTex, float2(xAdd, uv.y)).a * 2;
+
+					edgeX += tex2D(_MainTex, float2(xDec, yDec)).a * -1;
+					//edgeX += _MainTex, float2(uv.x, yDec)).a * 0;
+					edgeX += tex2D(_MainTex, float2(xAdd, yDec)).a * 1;
+
+
+					half edgeY = tex2D(_MainTex, float2(xDec, yAdd)).a * -1;
+					edgeY += tex2D(_MainTex, float2(uv.x, yAdd)).a * -2;
+					edgeY += tex2D(_MainTex, float2(xAdd, yAdd)).a * -1;
+
+					//edgeY += tex2D(_MainTex, float2(xDec, uv.y)).a * 0;
+					//edgeY += tex2D(_MainTex, float2(uv.x, uv.y)).a * 0;
+					//edgeY += tex2D(_MainTex, float2(xAdd, uv.y)).a * 0;
+
+					edgeY += tex2D(_MainTex, float2(xDec, yDec)).a * 1;
+					edgeY += tex2D(_MainTex, float2(uv.x, yDec)).a * 2;
+					edgeY += tex2D(_MainTex, float2(xAdd, yDec)).a * 1;
+
+					half edge = abs(edgeX) + abs(edgeY);
+
+					//_EdgeColor.a = color.a;
+					color = lerp(color, _EdgeColor, edge);
+
 
 	#if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
 					if (_AlphaSplitEnabled)

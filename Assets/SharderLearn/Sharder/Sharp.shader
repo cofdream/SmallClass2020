@@ -1,11 +1,11 @@
-﻿Shader "Master/Sprite/Gray"
+﻿Shader "Master/Sprite/Sharp"
 {
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Tint", Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 0
-		_GrayFactor("GrayFactor", Range(0,1)) = 1 // 设置灰度程度
+		_BlurFactor("BlurFactor", Range(0,0.1)) = 0.03
 	}
 
 		SubShader
@@ -64,18 +64,30 @@
 				sampler2D _MainTex;
 				sampler2D _AlphaTex;
 				float _AlphaSplitEnabled;
-				
-				float _GrayFactor;
+
+				float _BlurFactor;
 
 				fixed4 SampleSpriteTexture(float2 uv)
 				{
-					fixed4 color = tex2D(_MainTex, uv);
+					float xAdd = uv.x + _BlurFactor;
+					float xDec = uv.x - _BlurFactor;
+					float yAdd = uv.y + _BlurFactor;
+					float yDec = uv.y - _BlurFactor;
 
-					float gray = color.r * 0.299 + color.g * 0.587 + color.b * 0.114;
+					// 左上 - 右上
+					fixed4 color = tex2D(_MainTex, float2(xDec, yAdd)) * -1;
+					color += tex2D(_MainTex, float2(uv.x, yAdd)) * -1;
+					color += tex2D(_MainTex, float2(xAdd, yAdd)) * -1;
 
-					float4 graycolor = float4(gray, gray, gray, color.a);
+					// 左中-右中								 
+					color += tex2D(_MainTex, float2(xDec, uv.y)) * -1;
+					color += tex2D(_MainTex, float2(uv.x, uv.y)) * 9;
+					color += tex2D(_MainTex, float2(xAdd, uv.y)) * -1;
 
-					color = lerp(color, graycolor, _GrayFactor);
+					// 左下 - 右下								 
+					color += tex2D(_MainTex, float2(xDec, yDec)) * -1;
+					color += tex2D(_MainTex, float2(uv.x, yDec)) * -1;
+					color += tex2D(_MainTex, float2(xAdd, yDec)) * -1;
 
 	#if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
 					if (_AlphaSplitEnabled)

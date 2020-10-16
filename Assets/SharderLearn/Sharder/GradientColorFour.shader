@@ -1,11 +1,15 @@
-﻿Shader "Master/Sprite/Gray"
+﻿Shader "Master/Sprite/GradientColorFour"
 {
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Tint", Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 0
-		_GrayFactor("GrayFactor", Range(0,1)) = 1 // 设置灰度程度
+		
+        _LeftTopColor("_LeftTopColor", Color) = (1,1,1,0)
+        _RightTopColor("_RightTopColor", Color) = (1,1,1,0)
+        _LeftBottomColor("_LeftBottomColor", Color) = (1,1,1,0)
+        _RightBottomColor("_RightBottomColor", Color) = (1,1,1,0)
 	}
 
 		SubShader
@@ -64,18 +68,22 @@
 				sampler2D _MainTex;
 				sampler2D _AlphaTex;
 				float _AlphaSplitEnabled;
-				
-				float _GrayFactor;
+
+                fixed4  _LeftTopColor;
+				fixed4  _RightTopColor;
+				fixed4  _LeftBottomColor;
+				fixed4  _RightBottomColor;
 
 				fixed4 SampleSpriteTexture(float2 uv)
 				{
 					fixed4 color = tex2D(_MainTex, uv);
 
-					float gray = color.r * 0.299 + color.g * 0.587 + color.b * 0.114;
-
-					float4 graycolor = float4(gray, gray, gray, color.a);
-
-					color = lerp(color, graycolor, _GrayFactor);
+    				fixed4 top = lerp(_LeftTopColor, _RightTopColor, uv.x);
+					fixed4 bottom = lerp(_LeftBottomColor, _RightBottomColor, uv.x);
+					fixed4 lerpColor = lerp(bottom,top , uv.y) * color;
+					// 保留原图的透明度
+                    lerpColor.a = color.a;
+                    color = lerpColor;
 
 	#if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
 					if (_AlphaSplitEnabled)
