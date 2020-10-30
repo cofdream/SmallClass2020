@@ -1,4 +1,4 @@
-﻿Shader "Master/Sprite/DLine" //对角线
+﻿Shader "Master/Sprite/Grid"
 {
 	Properties
 	{
@@ -64,21 +64,17 @@
 				sampler2D _AlphaTex;
 				float _AlphaSplitEnabled;
 				
-				float _GrayFactor;
-
-				fixed LineContent(float x,float y)
-				{
-					return smoothstep(x - 0.02,x -0.01,y) - smoothstep(x +0.01,x + 0.02,y);
-				}
 				fixed4 SampleSpriteTexture(float2 uv)
 				{
+					uv = uv * 2;
+
+					uv = frac(uv);
+
 					fixed4 color = tex2D(_MainTex, uv);
 
-					fixed CenterPosition = length(uv - fixed2(0.49,0.535));
+					//color = color * 0.999999;
 
-					fixed Circle = 1 - step(0.365,CenterPosition);
-
-					color = lerp(color,fixed4(0,0,0,color.a),Circle);
+					//color = frac(color);
 
 	#if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
 					if (_AlphaSplitEnabled)
