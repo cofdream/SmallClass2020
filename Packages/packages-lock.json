@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.devilangel.datools": {
+      "version": "https://github.com/cofdream/DATools.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "0b69386fce4fb135e04956c37481c32029fb19f9"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
