@@ -69,7 +69,7 @@
 				{
 					float2 originalUV = uv;
 
-					float speed = _Time.y * 3;
+					float speed = floor(_Time.y * 5);
 					uv.x = uv.x + sin(uv.x *10 + speed) * 4;
 					 uv.y = uv.y + sin(uv.y*10 + speed) * 4;
 					
