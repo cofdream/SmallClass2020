@@ -1,4 +1,4 @@
-﻿Shader "Master/Sprite/Fire"
+﻿Shader "Master/Sprite/Burn"
 {
     Properties
     {
@@ -92,49 +92,79 @@
 
                 // 没搞清楚的一堆操作
                 return lerp(a, b, u.x) + (c - a)* u.y * (1.0 - u.x) + (d - b) * u.x * u.y; 
-            }             
+            }   
+            
+            float fbm (float2 uv)
+            {
+                float retNoise = 0.0;
+                float uvOffset = 2.0;
+
+                for ( int i = 0; i < 9; i++ ) 
+                {
+                    retNoise += noise(uvOffset * uv) / uvOffset; 
+                    uvOffset += uvOffset; 
+                }
+            
+                return retNoise;
+            }
 
             fixed4 SampleSpriteTexture (float2 uv)
             {
-                float baseSpeed = -_Time.y * 0.1;
-                float2 noiseUV1 = (0.2 * uv + baseSpeed * float2(0.0,0.5)) * 80.0;
-                float2 noiseUV2 = (0.2 * uv + baseSpeed * float2(0.0,1.0)) * 80.0;
+                //float baseSpeed = -_Time.y * 0.1;
+                //float2 noiseUV1 = (0.2 * uv + baseSpeed * float2(0.0,0.5)) * 80.0;
+                //float2 noiseUV2 = (0.2 * uv + baseSpeed * float2(0.0,1.0)) * 80.0;
 
-                float noiseColor1 = noise(noiseUV1);
-                float noiseColor2 = noise(noiseUV2);
+                //float noiseColor1 = noise(noiseUV1);
+                //float noiseColor2 = noise(noiseUV2);
 
-                float noiseColor = noiseColor1 + noiseColor2;
+                //float noiseColor = noiseColor1 + noiseColor2;
 
-                // 使深色更深
-                float fireNoise = pow(noiseColor,5);
+                //// 使深色更深
+                //float fireNoise = pow(noiseColor,5);
 
-                // 拿到 uv 的 y 值
-                float y = uv.y;
+                //// 拿到 uv 的 y 值
+                //float y = uv.y;
 
-                // 将 y 的范围控制在 整体图像的下半部分
-                fireNoise = (2 + fireNoise * 80 * y) * y;
-                fireNoise = 1 - fireNoise;
+                //// 将 y 的范围控制在 整体图像的下半部分
+                //fireNoise = (2 + fireNoise * 80 * y) * y;
+                //fireNoise = 1 - fireNoise;
+
+                //
+
+                //fireNoise = pow(fireNoise,3);
+
+                //float4 fireColor = lerp(float4(1,0,0,texColor.a),float4(1,1,0,texColor.a),fireNoise);
+
+                //float isFireColor = step(0.001,fireNoise);
+
+                //float4 resultColor = lerp(texColor,fireColor,isFireColor);
+                #if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
+                if (_AlphaSplitEnabled)
+                    color.a = tex2D (_AlphaTex, uv).r;
+                #endif //UNITY_TEXTURE_ALPHASPLIT_ALLOWED
 
                 float4 texColor = tex2D(_MainTex,uv);
 
-                fireNoise = pow(fireNoise,3);
+                float4 fbmNoise = fbm(3.5 * uv);
+                float burnFactor = frac(_Time.y * 0.5);
 
-                float4 fireColor = lerp(float4(1,0,0,texColor.a),float4(1,1,0,texColor.a),fireNoise);
+                float fadeoutFactor = frac(burnFactor * 0.9999);
 
-                float isFireColor = step(0.001,fireNoise);
+                float4 resultColor = smoothstep(fadeoutFactor,fadeoutFactor + 0.1,fbmNoise);
 
-                float4 resultColor = lerp(texColor,fireColor,isFireColor);
+                resultColor = texColor * resultColor;
 
+                float3 burnColor = float3(24,3,1);
 
-#if UNITY_TEXTURE_ALPHASPLIT_ALLOWED
-                if (_AlphaSplitEnabled)
-                    color.a = tex2D (_AlphaTex, uv).r;
-#endif //UNITY_TEXTURE_ALPHASPLIT_ALLOWED
+                float3 minColor = resultColor.rgb - burnFactor;
+
+                float3 maxColor = fbmNoise * 10 * burnColor *(1 - resultColor.a);
+
+                resultColor.rgb = lerp(minColor,maxColor,burnFactor);
+
 
                 return resultColor;
-
             }
-
 
             fixed4 frag(v2f IN) : SV_Target
             {
