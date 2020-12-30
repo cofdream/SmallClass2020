@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Noise 1
-  m_Shader: {fileID: 4800000, guid: 2d35266387d02bb448184ce0e95a2083, type: 3}
+  m_Name: Burn
+  m_Shader: {fileID: 4800000, guid: a05d7a62097b0d842a64969db947d56d, type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
