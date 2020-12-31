@@ -6,11 +6,11 @@
 
         _Color("Tint", Color) = (1,1,1,1)
             // 初识颜色
-            _FromColor("FromColor",Color) = (1,1,0,1)
+            _FromColor("FromColor",Color) = (0,1,1,1)
             // 目标颜色
-            _ToColor("ToColor",Color) = (0,1,1,1)
+            _ToColor("ToColor",Color) = (1,1,0,1)
             // 是否是垂直方向
-            [Toggle(VertialDirection)] _VerticalDirection("Vertical Direction", Int) = 0
+            [Toggle(VertialDirection)] _VerticalDirection("Vertical Direction", Int) = 1
     }
         SubShader
         {

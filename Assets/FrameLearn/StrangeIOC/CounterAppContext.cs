@@ -17,9 +17,11 @@ namespace FrameLearn.StrangeIOC
             injectionBinder.Bind<CounterAppModel>().To<CounterAppModel>().ToSingleton();
 
             mediationBinder.Bind<BtnAddView>().To<BtnAddViewMediator>();
+            mediationBinder.Bind<BtnSubView>().To<BtnSubViewMediator>();
             mediationBinder.Bind<NumberView>().To<NumberMediator>();
 
             commandBinder.Bind(IncreaseCommand.EVENT).To<IncreaseCommand>();
+            commandBinder.Bind(DecreaseCommand.EVENT).To<DecreaseCommand>();
         }
 
         protected override void addCoreComponents()

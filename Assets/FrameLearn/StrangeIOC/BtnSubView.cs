@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NullNamespace
+namespace FrameLearn.StrangeIOC
 {
     public class BtnSubView : EventView
     {
