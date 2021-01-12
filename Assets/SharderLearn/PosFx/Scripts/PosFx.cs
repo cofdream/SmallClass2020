@@ -13,12 +13,11 @@ public class PosFx : MonoBehaviour
     {
         get
         {
-            //if (material == null)
+            if (material == null)
                 material = GenerateMaterial(Shader);
             return material;
         }
     }
-
     protected Material GenerateMaterial(Shader shader)
     {
         if (shader == null || shader.isSupported == false)
